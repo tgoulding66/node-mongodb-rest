@@ -1,16 +1,16 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost/swag-shop');
-var Product = require('./model/product');
-var WishList = require('./model/wishlist');
+var express = require('express');   //Express framework, a popular Node.js web application framework used for building APIs and web applications.
+var app = express();    //Create an instance of the Express framework.
+var bodyParser = require('body-parser');    //Body-parser, a middleware that parses incoming request bodies in a middleware before handlers, available under the req.body property.
+var mongoose = require('mongoose'); //Mongoose, an Object Data Modeling (ODM) library for MongoDB and Node.js, used to interact with MongoDB databases.
+var db = mongoose.connect('mongodb://localhost/swag-shop');   //Connect to the MongoDB database named swag-shop.
+var Product = require('./model/product');   //Import the Product model from the model/product.js file.
+var WishList = require('./model/wishlist'); //Import the WishList model from the model/wishlist.js file.
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json()); //Parse JSON data with JSON library.
+app.use(bodyParser.urlencoded({ extended: false }));    //Parse URL-encoded data with querystring library.
 
 app.post('/product', function(request, response) {
-
+    //Create a new Product instance and set its title and price properties from the request body.
     var product = new Product();
     product.title = request.body.title;
     product.price = request.body.price;
@@ -24,7 +24,7 @@ app.post('/product', function(request, response) {
     //     }
     // }); 
 
-
+    //Save the product instance to the database and send the saved product as a response.
     product.save()
         .then(function(savedProduct) {
             response.status(200).send(savedProduct);
@@ -43,7 +43,7 @@ app.get('/product', function(request, response) {
     //         response.status(200).send(products);
     //     }
     // });
-    
+    //Fetch all products from the database and send them as a response.
     Product.find()
         .then(function(products) {
             response.status(200).send(products);
@@ -62,7 +62,7 @@ app.get('/wishlist', function(request, response) {
     //         response.status(200).send(wishLists);
     //     }
     // });
-
+    //Fetch all wish lists from the database and send them as a response.
     WishList.find()
         // .then(function(wishLists) {
         //     response.status(200).send(wishLists);
@@ -83,7 +83,7 @@ app.get('/wishlist', function(request, response) {
         });
         
     });
-
+//Create a new wish list instance and set its title property from the request body.
 app.post('/wishlist', function(request, response) {
     var wishList = new WishList();
     wishList.title = request.body.title;
@@ -96,7 +96,7 @@ app.post('/wishlist', function(request, response) {
     //         response.status(200).send(newWishList);
     //     }
     // });
-
+    //Save the wish list instance to the database and send the saved wish list as a response.
     wishList.save()
         .then(function(newWishList) {
             response.status(200).send(newWishList);
@@ -124,6 +124,7 @@ app.post('/wishlist', function(request, response) {
 // });
 
 // Refactored code from ChatGPT
+// Add a product to a wish list
 app.put('/wishlist/product/add', async (request, response) => {
     try {
         const product = await Product.findById(request.body.productId);
@@ -147,7 +148,7 @@ app.put('/wishlist/product/add', async (request, response) => {
         response.status(500).send({ error: "Could not add product to wish list" });
     }
 });
-
+// Start the server on port 3000.
 app.listen(3000, function() {
     console.log('Swag Shop is running on port 3000');
 });
