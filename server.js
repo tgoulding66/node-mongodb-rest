@@ -70,6 +70,9 @@ app.get('/wishlist', function(request, response) {
         // .catch(function(err) {
         //     response.status(500).send({ error: "Could not fetch wish lists" });
         // });
+        
+        //instead of populating the just the productId field in the wish list, we can use the populate 
+        //method to populate all product fields in the wish list using the Product model
         .populate({ path: 'products', model: 'Product' })
         .exec()
         .then(function(wishLists) {
